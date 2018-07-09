@@ -18,10 +18,10 @@ import com.liferay.util.mail.MailEngineException;
 public class Emails {
 	public static String NOTIFYUSR_SUBJECT = "You got a badge!";
 	public static String NOTIFYSUBSCRIBERS_SUBJECT = "A badge was assigned!";
-	public static String NOTIFYUSR_BODY = "Congratulation!\n\nYou got a %1$s badge from %2$s";
-	public static String NOTIFYSUBSCRIBERS_BODY = "%2$s gave a %1$s badge to %3$s";
+	public static String NOTIFYUSR_BODY = "Congratulation!\n\nYou got a %1$s badge from %2$s\n\nDescription: %3$s";
+	public static String NOTIFYSUBSCRIBERS_BODY = "%2$s gave a %1$s badge to %3$s\n\nDescription: %4$s";
 
-	public static boolean notifyUser(long toUserId, long fromUserId, int badgeType, PortletRequest request) {
+	public static boolean notifyUser(long toUserId, long fromUserId, int badgeType, String description, PortletRequest request) {
 		String emailAddr = _getEmailAddr(toUserId);
 		if (Validator.isNull(emailAddr)) {
 			_log.debug("There is no email address for user " + toUserId);
@@ -32,14 +32,14 @@ public class Emails {
 		String badgeName = _getBadgeName(badgeType);
 
 		String subject = NOTIFYUSR_SUBJECT;
-		String body = String.format(NOTIFYUSR_BODY, badgeName, fromUserName);
+		String body = String.format(NOTIFYUSR_BODY, badgeName, fromUserName, description);
 
 		return sendMail(emailAddr, subject, body, request);
 	}
 
 	public static void notifySubscribers(
 		Long[] subscribers, long fromUserId, long toUserId, int badgeType,
-		PortletRequest request) {
+		String description, PortletRequest request) {
 
 		for (long subscriberId: subscribers) {
 			String emailAddr = _getEmailAddr(subscriberId);
@@ -53,7 +53,7 @@ public class Emails {
 			String badgeName = _getBadgeName(badgeType);
 
 			String subject = NOTIFYSUBSCRIBERS_SUBJECT;
-			String body = String.format(NOTIFYSUBSCRIBERS_BODY, badgeName, fromUserName, toUserName);
+			String body = String.format(NOTIFYSUBSCRIBERS_BODY, badgeName, fromUserName, toUserName, description);
 
 			sendMail(emailAddr, subject, body, request);
 		}

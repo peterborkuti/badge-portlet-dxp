@@ -81,10 +81,10 @@ public class BadgePortlet extends MVCPortlet {
 		}
 
 		BadgeServiceUtil.addBadge(date, fromUserId, toUserId, badgeType, description);
-		Emails.notifyUser(toUserId, fromUserId, badgeType, request);
+		Emails.notifyUser(toUserId, fromUserId, badgeType, description, request);
 		Emails.notifySubscribers(
 			SubscriberServiceUtil.getSubscribers(), fromUserId, toUserId,
-			badgeType, request);
+			badgeType, description, request);
 
 		sendRedirect(request, actionResponse);
 	}
